@@ -1,3 +1,4 @@
+#!/usr/bin/env python2
 # -*- coding: utf-8 -*-
 from bottle import *
 import sys, os, time, md5, urllib2, json
@@ -71,10 +72,10 @@ def convert_bytes(path):
         kilobytes = bytes / 1024
         size = '%.2f Kb' % kilobytes
     else:
-        size = '%.2f Byte' % bytes
+        size = '%.2f Bytes' % bytes
     return size
 
-@app.post('/login')
+@app.post(app_dir+'/login')
 def login():
     login = request.forms.get('login')
     password = request.forms.get('password')
@@ -86,53 +87,51 @@ def login():
             hash.update(password)
             response.set_cookie("login", login)
             response.set_cookie("password", hash.hexdigest())
-            print "OK"
             redirect(app_dir+"/")
         else:
-            print "Wrong passowrd!"
             redirect(app_dir+"/?error=badpass")
     else:
-        print "Wrong password!"
+	# don't indicate if that's a valid user
         redirect(app_dir+"/?error=badpass")
     return ""
 
-@app.route('/logout')
+@app.route(app_dir+'/logout')
 def logout():
     response.set_cookie("login", "")
     response.set_cookie("password", "")
     redirect(app_dir+"/")
 
-@app.route('/img/:filename')
+@app.route(app_dir+'/img/:filename')
 def img_static(filename):
     return static_file(filename, root=full_path+'/views/static/img/')
 
-@app.route('/img/view')
+@app.route(app_dir+'/img/view')
 def view_img_static():
     filename = request.GET.get('path')
     return static_file(filename, root=full_path)
 
-@app.route('/thumb')
+@app.route(app_dir+'/thumb')
 def view_img_static():
     filename = request.GET.get('path')
     return static_file(filename, root=full_path)
 
-@app.route('/img/icons/:filename')
+@app.route(app_dir+'/img/icons/:filename')
 def icons_static(filename):
     return static_file(filename, root=full_path+'/views/static/img/icons/')
 
-@app.route('/img/fancybox/:filename')
+@app.route(app_dir+'/img/fancybox/:filename')
 def fancybox_static(filename):
     return static_file(filename, root=full_path+'/views/static/img/fancybox/')
 
-@app.route('/js/:filename')
+@app.route(app_dir+'/js/:filename')
 def js_static(filename):
     return static_file(filename, root=full_path+'/views/static/js/')
 
-@app.route('/css/:filename')
+@app.route(app_dir+'/css/:filename')
 def css_static(filename):
     return static_file(filename, root=full_path+'/views/static/css/')
 
-@app.route('/upload', method='POST')
+@app.route(app_dir+'/upload', method='POST')
 def do_upload():
     name = request.forms.get('name')
     print name
@@ -148,7 +147,7 @@ def do_upload():
     thumb.write(data.file.read())
     return redirect(app_dir+"/?path=" + path)
 
-@app.route('/delete')
+@app.route(app_dir+'/delete')
 def delete():
     try:
         os.remove(full_path + request.GET.get('path'))
@@ -157,7 +156,7 @@ def delete():
         print "File doesn't exists"
     return redirect(app_dir+"/?path=" + str(request.GET.get('return')))
 
-@app.route('/description', method='POST')
+@app.route(app_dir+'/description', method='POST')
 def description():
     f = full_path + request.forms.get('dir') + "/.settings"
     new_settings = json.loads('{"' + request.forms.get('name') + '": "' + request.forms.get('description') + '"}')
@@ -175,12 +174,16 @@ def description():
     settings_file.close()
     return redirect(app_dir+"/?path=" + request.forms.get('dir'))
 
-@app.route('/download')
+@app.route(app_dir+'/download')
 def download():
     filename = request.GET.get('path')
     return static_file(filename, root=full_path, download=filename)
 
 @app.route('/')
+def redirect_home():
+    return redirect(app_dir+'/')
+
+@app.route(app_dir+'/')
 @view('list')
 def list():
     if request.get_cookie("login") in admins:
@@ -226,7 +229,7 @@ def list():
                 description = ''
             output.append({"name": item, "path": filepath, "type": get_file_type(item), "date": date_file(full_path + filepath), "size": convert_bytes(full_path + filepath), "preview": preview, "counter": i, "description": description})
             i = i + 1
-    data = {"title": path, "full_path": full_path, "path": path, "list": dirList, "toplevel": toplevel, "output": output, "login": request.get_cookie("login"), "password": request.get_cookie("password"), "error": request.GET.get('error'), "is_admin": is_admin}
+    data = {"title": path, "full_path": full_path, "path": path, "list": dirList, "toplevel": toplevel, "output": output, "login": request.get_cookie("login"), "password": request.get_cookie("password"), "error": request.GET.get('error'), "is_admin": is_admin, "app_dir": app_dir}
     return dict(data=data)
 
 debug(True)
