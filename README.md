@@ -18,3 +18,11 @@ TODO :
 - view files (images, text, etc)
 - multilang support
 - code cleanup
+
+
+HOW TO USE WITH NGINX :
+- change "app_dir" to desired directory
+- use this location configuration with NGiNX
+location /directory {
+    proxy_pass http://127.0.0.1:8082;
+}
