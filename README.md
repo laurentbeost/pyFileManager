@@ -4,9 +4,7 @@ pyFileManager
 Python web file manager
 
 --
-Forked from https://github.com/inlanger/SimplePythonFileManager
-
---
+Forked from https://github.com/inlanger/SimplePythonFileManager, and add these features
 
 FEATURES :
 - english translation
@@ -14,8 +12,9 @@ FEATURES :
 
 
 TODO :
-- multilang support
 - upload and remove files
 - change chmod
+- ini configuration support (or SQLite)
 - view files (images, text, etc)
+- multilang support
 - code cleanup
