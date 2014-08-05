@@ -1,0 +1,157 @@
+<!doctype html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
+  <title>File manager</title>
+  <meta name="description" content="">
+  <link rel="stylesheet" href="css/jquery.fancybox-1.3.4.css" type="text/css" media="screen" />
+  <link rel="stylesheet" href="css/bootstrap.css">
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
+  <script type="text/javascript" src="js/jquery.fancybox-1.3.4.pack.js"></script>
+  <script type="text/javascript" src="js/jquery.easing-1.3.pack.js"></script>
+  <script type="text/javascript" src="js/bootstrap-alerts.js"></script>
+  <script type="text/javascript" src="js/bootstrap-modal.js"></script>
+  <script type="text/javascript">
+  $(document).ready(function() {
+    $("a.fancybox").fancybox();
+    $(".alert-message").alert('close');
+  });
+  </script>
+</head>
+<body>
+<div class="topbar">
+      <div class="topbar-inner">
+        <div class="container">
+          <span class="brand" href="#">{{ data['title'] }}</span>
+          <ul class="nav secondary-nav">
+            %if data['login'] and data['password']:
+            <li class=""><a href="logout">Log out</a></li>
+            %end
+          </ul>
+        </div>
+      </div>
+    </div>
+  <div class="container">
+    <header>
+		<h1>{{data['title']}}</h1>
+    <hr />
+    </header>
+    %if data['error'] == 'badpass':
+    <div class="alert-message error">
+      <a class="close" href="#">×</a>
+      <p><strong>Wroing password!</strong> Please try again.</p>
+    </div>
+    %end
+    %if data['error'] == 'empty':
+    <div class="alert-message error">
+      <a class="close" href="#">×</a>
+      <p><strong>Enter your username and password!</strong></p>
+    </div>
+    %end
+    %if data['error'] == 'badlogin':
+    <div class="alert-message error">
+      <a class="close" href="#">×</a>
+      <p><strong>Wrong login!</strong> Please try again.</p>
+    </div>
+    %end
+    %if data['toplevel']:
+         <p><a href="?path={{ data['toplevel'] }}">..</a></p>
+    %end
+    %if data['login'] and data['password']:
+    <table class="zebra-striped" id="main">
+    <thead>
+          <tr>
+            <th style="width: 300px;">Name</th>
+            <th>Activity</th>
+            <th>Size</th>
+            <th>Modified</th>
+            <th>Description</th>
+          </tr>
+    </thead>
+    %for row in data['output']:   
+      <tr><td>
+      <img src="img/icons/{{ row["type"] }}.png" />
+      %if row["type"] == 'folder':
+      <a href="?path={{ row['path'] }}">{{ row['name'] }}</a>
+      %else:
+      <a href="download?path={{ row['path'] }}">{{ row['name'] }}</a>
+      %end
+      </td>
+      <td>
+      %if row["type"] == 'imagen':
+      <a href="img/view?path={{ row['path'] }}" class="fancybox"><img src="img/icons/image_view.png" /></a>
+      %end
+      %if data['is_admin']:
+      <button data-controls-modal="modal-from-{{ row['counter'] }}" data-backdrop="true" data-keyboard="true" class="btn primary">Manage</button>
+      <div id="modal-from-{{ row['counter'] }}" class="modal hide fade" style="display: none; ">
+            <div class="modal-header">
+              <a href="#" class="close">×</a>
+              <h3>Manage {{ row['name'] }}</h3>
+            </div>
+            <div class="modal-body">
+
+              <p>      
+                <h4>Preview</h4>
+                <form action="upload" method="POST" enctype="multipart/form-data">
+                <input type="file" name="file">
+                <input type="hidden" name="path" value="{{ row['path'] }}">
+                <input type="hidden" name="name" value="{{ row['name'] }}">
+                <input type="submit" class="btn" value="Upload preview"> <a href="delete?path={{ row['preview'] }}&return={{ data['path'] }}" class="btn danger">Remove preview</a>
+                <span class="help-block">Only upload JPEG images!</span>
+                </form>
+              </p>
+              <p>
+                <h4>Description</h4>
+                <form action="description" method="POST">
+                  <textarea class="xxlarge" name="description" rows="3">{{ row['description'] }}</textarea>
+                  <span class="help-block">
+                    Description will be visible to all users
+                  </span>
+                <input type="hidden" name="dir" value="{{ data['path'] }}">
+                <input type="hidden" name="name" value="{{ row['name'] }}">
+                <input type="submit" class="btn" value="Save description">
+                </form>
+              </p>
+            </div>
+      </div>
+      %if row["preview"]:
+      <a href="thumb?path={{ row['preview'] }}" class="fancybox"><img src="img/icons/image_view.png" /></a>
+      %end
+      %end
+      </td><td>
+      %if row["type"] != 'folder':
+      {{ row['size'] }}
+      %end
+      </td><td>{{ row['date'] }}</td>
+      <td>{{ row['description'] }}</td>
+      </tr>
+    %end
+    </table>
+    %else:
+    <div class="clearfix">
+      <form action="login" method="POST">
+      <div class="clearfix">
+        <label>Login:</label><div class="input"><input name="login" type="text" /></div>
+      </div><div class="clearfix">
+        <label>Password:</label><div class="input"><input name="password" type="password" /></div>
+      </div><div class="clearfix">
+        <div class="input"><input type="submit" value="Sign in!"></div>
+      </div>
+      </from>
+    </div>
+    %end
+  </div> <!--! end of .container -->
+
+
+  <!-- JavaScript at the bottom for fast page loading -->
+  <script>window.jQuery || document.write('<script src="js/jquery-1.6.2.min.js"><\/script>')</script>
+  <!-- Prompt IE 6 users to install Chrome Frame. Remove this if you want to support IE 6.
+       chromium.org/developers/how-tos/chrome-frame-getting-started -->
+  <!--[if lt IE 7 ]>
+    <script defer src="//ajax.googleapis.com/ajax/libs/chrome-frame/1.0.3/CFInstall.min.js"></script>
+    <script defer>window.attachEvent('onload',function(){CFInstall.check({mode:'overlay'})})</script>
+  <![endif]-->
+
+</body>
+</html>
