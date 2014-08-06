@@ -53,8 +53,8 @@ def get_file_type(filename):
 
 # Some code from https://github.com/herrerae/mia
 def date_file(path):
-    tiempo = time.gmtime(os.path.getmtime(path))
-    return time.strftime("%d.%m.%Y %H:%M:%S", tiempo)
+    mtime = time.gmtime(os.path.getmtime(path))
+    return time.strftime("%d/%m/%Y %H:%M:%S", mtime)
 
 # Some code from https://github.com/herrerae/mia
 def convert_bytes(path):
