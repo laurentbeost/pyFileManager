@@ -9,11 +9,13 @@ Forked from https://github.com/inlanger/SimplePythonFileManager, and add these f
 FEATURES :
 - english translation
 - reverse-proxy support
+- display chmod
 
 
 TODO :
 - upload and remove files
 - change chmod
+- change current directory with header links
 - ini configuration support (or SQLite)
 - view files (images, text, etc)
 - multilang support
