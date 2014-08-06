@@ -1,8 +1,6 @@
 <!doctype html>
 <head>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-
+  <meta charset="utf-8"/>
   <title>File manager</title>
   <meta name="description" content="">
   <link rel="stylesheet" href="css/jquery.fancybox-1.3.4.css" type="text/css" media="screen" />
@@ -23,7 +21,7 @@
 <div class="topbar">
       <div class="topbar-inner">
         <div class="container">
-          <span class="brand" href="#">{{ data['title'] }}</span>
+          <span class="brand">{{ data['title'] }}</span>
           <ul class="nav secondary-nav">
             %if data['login'] and data['password']:
             <li class=""><a href="logout">Log out</a></li>
@@ -71,7 +69,7 @@
     </thead>
     %for row in data['output']:   
       <tr><td>
-      <img src="img/icons/{{ row["type"] }}.png" />
+      <img src="img/icons/{{ row["type"] }}.png" alt="{{ row["type"] }}"/>
       %if row["type"] == 'folder':
       <a href="?path={{ row['path'] }}">{{ row['name'] }}</a>
       %else:
@@ -80,7 +78,7 @@
       </td>
       <td>
       %if row["type"] == 'imagen':
-      <a href="img/view?path={{ row['path'] }}" class="fancybox"><img src="img/icons/image_view.png" /></a>
+      <a href="img/view?path={{ row['path'] }}" class="fancybox"><img src="img/icons/image_view.png" alt="image_view"/></a>
       %end
       %if data['is_admin']:
       <button data-controls-modal="modal-from-{{ row['counter'] }}" data-backdrop="true" data-keyboard="true" class="btn primary">Manage</button>
@@ -116,7 +114,7 @@
             </div>
       </div>
       %if row["preview"]:
-      <a href="thumb?path={{ row['preview'] }}" class="fancybox"><img src="img/icons/image_view.png" /></a>
+      <a href="thumb?path={{ row['preview'] }}" class="fancybox"><img src="img/icons/image_view.png" alt="image_view"/></a>
       %end
       %end
       </td><td>
@@ -138,7 +136,7 @@
       </div><div class="clearfix">
         <div class="input"><input type="submit" value="Sign in!"></div>
       </div>
-      </from>
+      </form>
     </div>
     %end
   </div> <!--! end of .container -->

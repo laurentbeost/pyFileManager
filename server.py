@@ -184,7 +184,7 @@ def redirect_home():
     return redirect(app_dir+'/')
 
 @app.route(app_dir+'/')
-@view('list')
+@view('main')
 def list():
     if request.get_cookie("login") in admins:
         is_admin = True
