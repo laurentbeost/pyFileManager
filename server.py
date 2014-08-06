@@ -1,6 +1,7 @@
 #!/usr/bin/env python2
 # -*- coding: utf-8 -*-
 from bottle import *
+import libs.chmod as chmod
 import sys, os, time, md5, urllib2, json
 
 app = Bottle()
@@ -8,8 +9,7 @@ full_path = os.path.abspath(os.path.dirname(sys.argv[0]))
 app_dir = '/filemanager'
 accounts = {"test": "test", "test2": "test2"} 
 admins = ["test2"]
-exclude = [".settings", ".thumbs", "bottle.py", "bottle.pyc", "server.py", "views", ".DS_Store"]
-
+exclude = []
 
 # Some code from https://github.com/herrerae/mia
 def get_file_type(filename):
@@ -227,9 +227,16 @@ def list():
                 description = settings_json[item]
             else:
                 description = ''
-            output.append({"name": item, "path": filepath, "type": get_file_type(item), "date": date_file(full_path + filepath), "size": convert_bytes(full_path + filepath), "preview": preview, "counter": i, "description": description})
+            file = full_path + path + '/' + item
+            output.append({"name": item, "path": filepath, "type": get_file_type(item),
+                "date": date_file(full_path +filepath), "size": convert_bytes(full_path + filepath),
+                "preview": preview, "counter": i, "description": description,
+                "chmod":chmod.chmod.get_pretty_chmod(file)})
             i = i + 1
-    data = {"title": path, "full_path": full_path, "path": path, "list": dirList, "toplevel": toplevel, "output": output, "login": request.get_cookie("login"), "password": request.get_cookie("password"), "error": request.GET.get('error'), "is_admin": is_admin, "app_dir": app_dir}
+    data = {"title": path, "full_path": full_path, "path": path, "list": dirList,
+        "toplevel": toplevel, "output": output, "login": request.get_cookie("login"),
+        "password": request.get_cookie("password"), "error": request.GET.get('error'),
+        "is_admin": is_admin, "app_dir": app_dir}
     return dict(data=data)
 
 debug(True)

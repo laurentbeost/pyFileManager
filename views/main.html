@@ -62,6 +62,7 @@
           <tr>
             <th style="width: 300px;">Name</th>
             <th>Activity</th>
+            <th>Chmod</th>
             <th>Size</th>
             <th>Modified</th>
             <th>Description</th>
@@ -117,6 +118,8 @@
       <a href="thumb?path={{ row['preview'] }}" class="fancybox"><img src="img/icons/image_view.png" alt="image_view"/></a>
       %end
       %end
+      </td><td>
+      {{ row['chmod'] }}
       </td><td>
       %if row["type"] != 'folder':
       {{ row['size'] }}
