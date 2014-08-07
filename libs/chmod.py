@@ -6,13 +6,8 @@ def get_st_mode(file):
 def pretty_chmod(st_mode):
     prefix = get_prefix(st_mode)
     chmod = oct(st_mode)[-3:]
-    user = chmod[0]
-    group = chmod[1]
-    other = chmod[2]
-    user_pmode = get_mode(user)
-    group_pmode = get_mode(group)
-    other_pmode = get_mode(other)
-    return prefix+user_pmode+group_pmode+other_pmode
+    user, group, other = chmod
+    return prefix + ''.join(get_mode(mode) for mode in (user, group, other))
 
 def get_mode(permission):
     list = {'0':'---', '1':'--x', '2':'-w-', '3':'-wx', '4':'r--',
