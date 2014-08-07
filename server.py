@@ -231,7 +231,7 @@ def list():
             output.append({"name": item, "path": filepath, "type": get_file_type(item),
                 "date": date_file(full_path +filepath), "size": convert_bytes(full_path + filepath),
                 "preview": preview, "counter": i, "description": description,
-                "chmod":chmod.chmod.get_pretty_chmod(file)})
+                "chmod":chmod.get_pretty_chmod(file)})
             i = i + 1
     data = {"title": path, "full_path": full_path, "path": path, "list": dirList,
         "toplevel": toplevel, "output": output, "login": request.get_cookie("login"),
