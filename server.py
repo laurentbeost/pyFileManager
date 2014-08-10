@@ -202,16 +202,21 @@ def list():
             toplevel  = '/'
     else:
         toplevel = False
-    dirList = os.listdir(full_path + path)
-    f = full_path + path + "/.settings"
+    current_dir = full_path + path
+    all_files = os.listdir(current_dir)
+    dir_list = [d for d in os.listdir(current_dir) if os.path.isdir(os.path.join(current_dir, d))]
+    f = current_dir + "/.settings"
     if os.path.exists(f):
         settings_file = open(f, "r+")
         settings_json = json.load(settings_file)
         settings_file.close()
-    dirList.sort()
+    dir_list.sort()
+    file_list = [f for f in os.listdir(current_dir) if os.path.isfile(os.path.join(current_dir, f))]
+    file_list.sort()
+    all_files = dir_list + file_list
     output = []
     i = 1
-    for item in dirList:
+    for item in all_files:
         if item in exclude:
             pass
         else:
@@ -233,7 +238,7 @@ def list():
                 "preview": preview, "counter": i, "description": description,
                 "chmod":chmod.get_pretty_chmod(file)})
             i = i + 1
-    data = {"title": path, "full_path": full_path, "path": path, "list": dirList,
+    data = {"title": path, "full_path": full_path, "path": path, "list": all_files,
         "toplevel": toplevel, "output": output, "login": request.get_cookie("login"),
         "password": request.get_cookie("password"), "error": request.GET.get('error'),
         "is_admin": is_admin, "app_dir": app_dir}
