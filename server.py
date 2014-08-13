@@ -21,7 +21,7 @@ def get_file_type(filename):
     IMAGE_TYPE = ['bmp', 'gif', 'jpg', 'jpeg', 'png','svg']
     IMAGESOURCE_TYPE = ['eps', 'ico', 'psd', 'psp', 'raw', 'tga', 'tif', 'tiff', 'svg']
     VIDEO_TYPE = ['mv4', 'bup', 'mkv', 'ifo', 'flv', 'vob', '3g2', 'bik', 'xvid', 'divx', 'wmv', 'avi', '3gp', 'mp4', 'mov', '3gpp', '3gp2', 'swf', 'mpg', 'mpeg']
-    COMPRESS_TYPE = ['7z', 'dmg', 'rar', 'sit', 'zip', 'bzip', 'gz', 'tar', 'ace']
+    ARCHIVE_TYPE = ['7z', 'dmg', 'rar', 'sit', 'zip', 'bzip', 'gz', 'tar', 'ace']
     EXEC_TYPE = ['exe', 'msi', 'mse']
     SCRIPT_TYPE = ['js', 'html', 'htm', 'xhtml', 'jsp', 'asp', 'aspx', 'php', 'xml', 'css', 'py', 'bat', 'sh', 'rb', 'java']
 
@@ -34,13 +34,13 @@ def get_file_type(filename):
         elif extension in AUDIO_TYPE:
             type_file = 'audio'
         elif extension in IMAGE_TYPE:
-            type_file = 'imagen'
+            type_file = 'image'
         elif extension in IMAGESOURCE_TYPE:
             type_file = 'imagesource'
         elif extension in VIDEO_TYPE:
             type_file = 'video'
-        elif extension in COMPRESS_TYPE:
-            type_file = 'compress'
+        elif extension in ARCHIVE_TYPE:
+            type_file = 'archive'
         elif extension in EXEC_TYPE:
             type_file = 'exec'
         elif extension in SCRIPT_TYPE:
