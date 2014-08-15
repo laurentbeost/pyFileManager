@@ -11,7 +11,7 @@ accounts = {"test": "test", "test2": "test2"}
 admins = ["test2"]
 exclude = []
 
-# Some code from https://github.com/herrerae/mia
+# get file type based on filename
 def get_file_type(filename):
     path = request.GET.get('path')
     if not path:
@@ -51,13 +51,13 @@ def get_file_type(filename):
             type_file = 'unknow'
         return type_file
 
-# Some code from https://github.com/herrerae/mia
+# get date with proper format
 def date_file(path):
     mtime = time.gmtime(os.path.getmtime(path))
     return time.strftime("%d/%m/%Y %H:%M:%S", mtime)
 
-# Some code from https://github.com/herrerae/mia
-def convert_bytes(path):
+# get file size - human readable
+def get_file_size(path):
     bytes = float(os.path.getsize(path))
     if bytes >= 1099511627776:
         terabytes = bytes / 1099511627776
@@ -75,6 +75,7 @@ def convert_bytes(path):
         size = '%.2f Bytes' % bytes
     return size
 
+# process login
 @app.post(app_dir+'/login')
 def login():
     login = request.forms.get('login')
@@ -95,12 +96,14 @@ def login():
         redirect(app_dir+"/?error=badpass")
     return ""
 
+# process logout
 @app.route(app_dir+'/logout')
 def logout():
     response.set_cookie("login", "")
     response.set_cookie("password", "")
     redirect(app_dir+"/")
 
+# handle static files
 @app.route(app_dir+'/img/:filename')
 def img_static(filename):
     return static_file(filename, root=full_path+'/views/static/img/')
@@ -131,6 +134,11 @@ def js_static(filename):
 def css_static(filename):
     return static_file(filename, root=full_path+'/views/static/css/')
 
+@app.route(app_dir+'/fonts/:filename')
+def css_static(filename):
+    return static_file(filename, root=full_path+'/views/static/fonts/')
+
+# upload files
 @app.route(app_dir+'/upload', method='POST')
 def do_upload():
     name = request.forms.get('name')
@@ -147,6 +155,7 @@ def do_upload():
     thumb.write(data.file.read())
     return redirect(app_dir+"/?path=" + path)
 
+# delete files
 @app.route(app_dir+'/delete')
 def delete():
     try:
@@ -156,33 +165,18 @@ def delete():
         print "File doesn't exists"
     return redirect(app_dir+"/?path=" + str(request.GET.get('return')))
 
-@app.route(app_dir+'/description', method='POST')
-def description():
-    f = full_path + request.forms.get('dir') + "/.settings"
-    new_settings = json.loads('{"' + request.forms.get('name') + '": "' + request.forms.get('description') + '"}')
-    if os.path.exists(f):
-        settings_file = open(f, "r+")
-        settings_json = json.load(settings_file)
-        settings_json[request.forms.get('name')] = request.forms.get('description')
-        settings_file.close()
-        settings_file = open(f, "w")
-        settings_file.write(json.dumps(settings_json))
-        settings_file.close()
-    else:
-        settings_file = open(f, "w")
-        settings_file.write(json.dumps(new_settings))
-    settings_file.close()
-    return redirect(app_dir+"/?path=" + request.forms.get('dir'))
-
+# download file
 @app.route(app_dir+'/download')
 def download():
     filename = request.GET.get('path')
     return static_file(filename, root=full_path, download=filename)
 
+# redirect to app_dir
 @app.route('/')
 def redirect_home():
     return redirect(app_dir+'/')
 
+# handle main page
 @app.route(app_dir+'/')
 @view('main')
 def list():
@@ -228,15 +222,10 @@ def list():
                 preview = path + "/.thumbs/" + item + ".jpg"
             else:
                 preview = False
-            if os.path.exists(f) and settings_json.get(item):
-                description = settings_json[item]
-            else:
-                description = ''
             file = full_path + path + '/' + item
             output.append({"name": item, "path": filepath, "type": get_file_type(item),
-                "date": date_file(full_path +filepath), "size": convert_bytes(full_path + filepath),
-                "preview": preview, "counter": i, "description": description,
-                "chmod":chmod.get_pretty_chmod(file)})
+                "date": date_file(full_path +filepath), "size": get_file_size(full_path + filepath),
+                "preview": preview, "counter": i, "chmod":chmod.get_pretty_chmod(file)})
             i = i + 1
     data = {"title": path, "full_path": full_path, "path": path, "list": all_files,
         "toplevel": toplevel, "output": output, "login": request.get_cookie("login"),
@@ -244,5 +233,4 @@ def list():
         "is_admin": is_admin, "app_dir": app_dir}
     return dict(data=data)
 
-debug(True)
-run(app, host='127.0.0.1', port=8082, reloader=True)
+run(app, host='127.0.0.1', port=8082, reloader=True, debug=False)

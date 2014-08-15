@@ -4,12 +4,12 @@ pyFileManager
 Python web file manager
 
 --
-Forked from https://github.com/inlanger/SimplePythonFileManager, and add these features
-
 FEATURES :
 - english translation
 - reverse-proxy support
 - display chmod
+
+
 
 
 TODO :
@@ -20,6 +20,8 @@ TODO :
 - view files (images, text, etc)
 - multilang support
 - code cleanup
+
+
 
 
 HOW TO USE WITH NGINX :

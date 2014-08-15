@@ -37,11 +37,11 @@
      // set CSS transition event type
      if ( $.support.transition ) {
        transitionEnd = "TransitionEnd"
-       if ( $.browser.webkit ) {
+       if ( $jQuery.browser.webkit ) {
        	transitionEnd = "webkitTransitionEnd"
-       } else if ( $.browser.mozilla ) {
+       } else if ( $jQuery.browser.mozilla ) {
        	transitionEnd = "transitionend"
-       } else if ( $.browser.opera ) {
+       } else if ( $jQuery.browser.opera ) {
        	transitionEnd = "oTransitionEnd"
        }
      }

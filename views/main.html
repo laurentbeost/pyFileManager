@@ -3,156 +3,153 @@
   <meta charset="utf-8"/>
   <title>File manager</title>
   <meta name="description" content="">
-  <link rel="stylesheet" href="css/jquery.fancybox-1.3.4.css" type="text/css" media="screen" />
-  <link rel="stylesheet" href="css/bootstrap.css">
-  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
-  <script type="text/javascript" src="js/jquery.fancybox-1.3.4.pack.js"></script>
+  <link rel="stylesheet" href="css/jquery.fancybox-2.1.5.css" type="text/css" media="screen" />
+  <link rel="stylesheet" href="css/bootstrap.min-3.2.0.css">
+  <script type="text/javascript" src="js/jquery-1.11.1.min.js"></script>
+  <script type="text/javascript" src="js/jquery.fancybox-2.1.5.pack.js"></script>
+  <script type="text/javascript" src="js/bootstrap.min-3.2.0.js"></script>
   <script type="text/javascript" src="js/jquery.easing-1.3.pack.js"></script>
-  <script type="text/javascript" src="js/bootstrap-alerts.js"></script>
-  <script type="text/javascript" src="js/bootstrap-modal.js"></script>
   <script type="text/javascript">
   $(document).ready(function() {
     $("a.fancybox").fancybox();
-    $(".alert-message").alert('close');
+    //$(".alert").alert('close');
+
+    // editRow()
+    var editRow = function(thisRow) {
+        thisRow.append('editRow()');
+    };
+
+    // deleteRow()
+    var deleteRow = function(thisRow) {
+        thisRow.remove();
+    };
+
+    // display buttons when mouse enter the table
+    $(".table tr").on("mouseenter", function() {
+        var overlay = $(this).find("span.overlay");
+        overlay.html('<a href="#" onClick="editRow('+$(this).attr("id")+')">Rename</a>');
+        overlay.append('&nbsp;&nbsp;<a href="#" onClick="deleteRow($(this))">Delete</a>');
+        overlay.append('&nbsp;&nbsp;<a href="#" onClick="download('+$(this).attr("id")+')"><img src="img/icons/download.png" alt="download" /></a>');
+    });
+
+    // and remove them when it leaves
+    $(".table tr").on("mouseleave", function() {
+        $(this).find("span.overlay").empty();
+    });
   });
   </script>
 </head>
 <body>
-<div class="topbar">
-      <div class="topbar-inner">
-        <div class="container">
-          <span class="brand">{{ data['title'] }}</span>
-          <ul class="nav secondary-nav">
-            %if data['login'] and data['password']:
-            <li class=""><a href="logout">Log out</a></li>
-            %end
-          </ul>
-        </div>
-      </div>
-    </div>
   <div class="container">
-    <header>
-		<h1>{{data['title']}}</h1>
-    <hr />
-    </header>
-    %if data['error'] == 'badpass':
-    <div class="alert-message error">
-      <a class="close" href="#">×</a>
-      <p><strong>Wrong password!</strong> Please try again.</p>
-    </div>
-    %end
-    %if data['error'] == 'empty':
-    <div class="alert-message error">
-      <a class="close" href="#">×</a>
-      <p><strong>Enter your username and password!</strong></p>
-    </div>
-    %end
-    %if data['error'] == 'badlogin':
-    <div class="alert-message error">
-      <a class="close" href="#">×</a>
-      <p><strong>Wrong login!</strong> Please try again.</p>
-    </div>
-    %end
-    %if data['toplevel']:
-         <p><a href="?path={{ data['toplevel'] }}">..</a></p>
-    %end
     %if data['login'] and data['password']:
-    <table class="zebra-striped" id="main">
-    <thead>
-          <tr>
-            <th style="width: 300px;">Name</th>
-            <th>Activity</th>
-            <th>Chmod</th>
-            <th>Size</th>
-            <th>Modified</th>
-            <th>Description</th>
-          </tr>
-    </thead>
-    %for row in data['output']:   
-      <tr><td>
-      <img src="img/icons/{{ row["type"] }}.png" alt="{{ row["type"] }}"/>
-      %if row["type"] == 'folder':
-      <a href="?path={{ row['path'] }}">{{ row['name'] }}</a>
-      %else:
-      <a href="download?path={{ row['path'] }}">{{ row['name'] }}</a>
-      %end
-      </td>
-      <td>
-      %if row["type"] == 'image':
-      <a href="img/view?path={{ row['path'] }}" class="fancybox"><img src="img/icons/image_view.png" alt="image_view"/></a>
-      %end
-      %if data['is_admin']:
-      <button data-controls-modal="modal-from-{{ row['counter'] }}" data-backdrop="true" data-keyboard="true" class="btn primary">Manage</button>
-      <div id="modal-from-{{ row['counter'] }}" class="modal hide fade" style="display: none; ">
-            <div class="modal-header">
-              <a href="#" class="close">×</a>
-              <h3>Manage {{ row['name'] }}</h3>
-            </div>
-            <div class="modal-body">
-
-              <div>     
-                <h4>Preview</h4>
-                <form action="{{ data['app_dir'] }}/upload" method="POST" enctype="multipart/form-data">
-                <input type="file" name="file"/>
-                <input type="hidden" name="path" value="{{ row['path'] }}"/>
-                <input type="hidden" name="name" value="{{ row['name'] }}"/>
-                <input type="submit" class="btn" value="Upload preview"/> <a href="delete?path={{ row['preview'] }}&amp;return={{ data['path'] }}" class="btn danger">Remove preview</a>
-                <span class="help-block">Only upload JPEG images!</span>
-                </form>
-              </div>
-              <div>
-                <h4>Description</h4>
-                <form action="{{ data['app_dir'] }}/description" method="POST">
-                  <textarea class="xxlarge" name="description" rows="3">{{ row['description'] }}</textarea>
-                  <span class="help-block">
-                    Description will be visible to all users
-                  </span>
-                <input type="hidden" name="dir" value="{{ data['path'] }}">
-                <input type="hidden" name="name" value="{{ row['name'] }}">
-                <input type="submit" class="btn" value="Save description">
-                </form>
-              </div>
-            </div>
+  <nav class="navbar navbar-default" role="navigation">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1"> <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="#">{{ data['title'] }}</a>
       </div>
-      %if row["preview"]:
-      <a href="thumb?path={{ row['preview'] }}" class="fancybox"><img src="img/icons/image_view.png" alt="image_view"/></a>
+      %if data['login'] and data['password']:
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+          <p class="navbar-text navbar-right"><a href="logout" class="navbar-link">Log out</a>&nbsp;</p>
+        </div>
       %end
-      %end
-      </td><td>
-      {{ row['chmod'] }}
-      </td><td>
-      %if row["type"] != 'folder':
-      {{ row['size'] }}
-      %end
-      </td><td>{{ row['date'] }}</td>
-      <td>{{ row['description'] }}</td>
-      </tr>
-    %end
-    </table>
-    %else:
-    <div class="clearfix">
-      <form action="{{ data['app_dir'] }}/login" method="POST">
-      <div class="clearfix">
-        <label>Login:</label><div class="input"><input name="login" type="text" /></div>
-      </div><div class="clearfix">
-        <label>Password:</label><div class="input"><input name="password" type="password" /></div>
-      </div><div class="clearfix">
-        <div class="input"><input type="submit" value="Sign in!"></div>
-      </div>
-      </form>
     </div>
+  </nav>
+    <div class="panel panel-default" id="main">
+      <div class="panel-heading">Browse files : {{ data['title'] }}</div>
+      <table class="table">
+        <tr>
+          <th style="width: 300px;">Name</th>
+          <th>Permissions</th>
+          <th>Size</th>
+          <th>Modified</th>
+        </tr>
+        %if data['toplevel']:
+          <tr>
+            <td>
+              <img src="img/icons/folder.png" alt="folder"/>
+              <a href="?path={{ data['toplevel'] }}">..</a>
+            </td>
+            <td><td><td></td><td></td>
+          </tr>
+        %end
+        %for row in data['output']:
+          <tr>
+            <td>
+            <img src="img/icons/{{ row["type"] }}.png" alt="{{ row["type"] }}"/>
+            %if row["type"] == 'folder':
+              <a href="?path={{ row['path'] }}">{{ row['name'] }}</a>
+            %else:
+              %if row["type"] == 'image':
+                <a href="img/view?path={{ row['path'] }}" class="fancybox">{{ row['name'] }}</a>
+              %else:
+                <a href="download?path={{ row['path'] }}">{{ row['name'] }}</a>
+              %end
+            %end
+            %if data['is_admin']:
+              <span class="overlay" style="float: right;"></span>
+            %end
+            </td>
+            <td>{{ row['chmod'] }}</td>
+            <td>
+              %if row["type"] != 'folder':
+                {{ row['size'] }}
+              %end
+            </td>
+            <td>{{ row['date'] }}</td>
+          </tr>
+        %end
+      </table>
+    </div>
+    %else:
+    <form class="form-horizontal" action="{{ data['app_dir'] }}/login" method="POST">
+      <div id="loginbox" style="margin-top:50px;" class="mainbox col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2">
+        %if data['error'] == 'badpass':
+          <div class="alert alert-danger" role="alert">
+            <p><strong>Wrong password!</strong> Please try again.</p>
+          </div>
+        %end
+        %if data['error'] == 'empty':
+          <div class="alert alert-danger" role="alert">
+            <p><strong>Enter your username and password!</strong></p>
+          </div>
+        %end
+        %if data['error'] == 'badlogin':
+          <div class="alert alert-danger" role="alert">
+          <p><strong>Wrong login!</strong> Please try again.</p>
+          </div>
+        %end
+
+          <div class="panel panel-default">
+            <div class="panel-body">
+              <fieldset>
+                <legend>Please login</legend>
+                <div class="input-group" style="margin-bottom: 25px">
+                  <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+                  <input id="login" type="text" class="form-control" name="login" value="" placeholder="username">
+                </div>
+                <div class="input-group" style="margin-bottom: 25px">
+                  <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
+                  <input id="password" type="password" class="form-control" name="password" value="" placeholder="password">
+                </div>
+                <button type="submit" class="btn btn-primary">Sign in !</button>
+              </fieldset>
+            </div>
+          </div>
+        </div>
+    </form>
     %end
-  </div> <!--! end of .container -->
+  </div>
 
-
-  <!-- JavaScript at the bottom for fast page loading -->
-  <script>window.jQuery || document.write('<script src="js/jquery-1.6.2.min.js"><\/script>')</script>
   <!-- Prompt IE 6 users to install Chrome Frame. Remove this if you want to support IE 6.
        chromium.org/developers/how-tos/chrome-frame-getting-started -->
   <!--[if lt IE 7 ]>
     <script defer src="//ajax.googleapis.com/ajax/libs/chrome-frame/1.0.3/CFInstall.min.js"></script>
     <script defer>window.attachEvent('onload',function(){CFInstall.check({mode:'overlay'})})</script>
   <![endif]-->
-
 </body>
 </html>
