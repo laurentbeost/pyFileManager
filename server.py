@@ -61,18 +61,18 @@ def get_file_size(path):
     bytes = float(os.path.getsize(path))
     if bytes >= 1099511627776:
         terabytes = bytes / 1099511627776
-        size = '%.2f Tb' % terabytes
+        size = '%.2f TB' % terabytes
     elif bytes >= 1073741824:
         gigabytes = bytes / 1073741824
-        size = '%.2f Gb' % gigabytes
+        size = '%.2f GB' % gigabytes
     elif bytes >= 1048576:
         megabytes = bytes / 1048576
-        size = '%.2f Mb' % megabytes
+        size = '%.2f MB' % megabytes
     elif bytes >= 1024:
         kilobytes = bytes / 1024
-        size = '%.2f Kb' % kilobytes
+        size = '%.2f KB' % kilobytes
     else:
-        size = '%.2f Bytes' % bytes
+        size = '%.2f bytes' % bytes
     return size
 
 # process login
@@ -142,7 +142,7 @@ def css_static(filename):
 @app.route(app_dir+'/upload', method='POST')
 def do_upload():
     name = request.forms.get('name')
-    print name
+    print("uploaded file : "+name)
     path = request.forms.get('path').replace("/" + name, "")
     data = request.files.get('file')
     if not os.path.isdir(full_path + path + "/.thumbs"):
@@ -150,7 +150,7 @@ def do_upload():
     try:
         os.remove(full_path + path + "/.thumbs/" + name + ".jpg")
     except:
-        print "File doesn't exists"
+        print("File doesn't exists")
     thumb = open(full_path + path + "/.thumbs/" + name + ".jpg", "w+")
     thumb.write(data.file.read())
     return redirect(app_dir+"/?path=" + path)
@@ -158,12 +158,13 @@ def do_upload():
 # delete files
 @app.route(app_dir+'/delete')
 def delete():
+    filePath = full_path + request.GET.get('path')
+    print("deleted file : "+filePath)
     try:
-        os.remove(full_path + request.GET.get('path'))
-        print full_path + request.GET.get('path')
+        os.remove(filePath)
     except:
-        print "File doesn't exists"
-    return redirect(app_dir+"/?path=" + str(request.GET.get('return')))
+        print("File doesn't exists")
+    return None
 
 # download file
 @app.route(app_dir+'/download')
@@ -185,7 +186,7 @@ def list():
     else:
         is_admin = False
     for header in response.headers:
-        print header
+        print(header)
     path = request.GET.get('path')
     if not path:
         path = '/'

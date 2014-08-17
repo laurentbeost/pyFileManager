@@ -5,38 +5,52 @@
   <meta name="description" content="pyFileManager - Python web file manager">
   <link rel="stylesheet" href="css/jquery.fancybox-2.1.5.pack.css" type="text/css" media="screen" />
   <link rel="stylesheet" href="css/bootstrap.min-3.2.0.css">
+  <link rel="stylesheet" href="css/style.css">
   <script type="text/javascript" src="js/jquery-2.1.1.min.js"></script>
   <script type="text/javascript" src="js/jquery.fancybox-2.1.5.pack.js"></script>
   <script type="text/javascript" src="js/bootstrap.min-3.2.0.js"></script>
-  <script type="text/javascript" src="js/jquery.easing-1.3.pack.js"></script>
   <script type="text/javascript">
-  $(document).ready(function() {
-    $("a.fancybox").fancybox();
-    //$(".alert").alert('close');
+    $(document).ready(function() {
+      $("a.fancybox").fancybox();
+      $(".alert").alert('close');
 
-    // editRow()
-    var editRow = function(thisRow) {
-        thisRow.append('editRow()');
-    };
+      // when mouse enter the table : display buttons
+      $(".table tr").on('mouseenter', function() {
+        var overlay = $(this).find('span.overlay');
+        overlay.css('visibility', 'visible');
+      });
 
-    // deleteRow()
-    var deleteRow = function(thisRow) {
-        thisRow.remove();
-    };
+      // when mouse leave the table : remove buttons
+      $(".table tr").on('mouseleave', function() {
+        var overlay = $(this).find('span.overlay');
+        overlay.css('visibility', 'hidden');
+      });
 
-    // display buttons when mouse enter the table
-    $(".table tr").on("mouseenter", function() {
-        var overlay = $(this).find("span.overlay");
-        overlay.html('<a href="#" onClick="editRow('+$(this).attr("id")+')">Rename</a>');
-        overlay.append('&nbsp;&nbsp;<a href="#" onClick="deleteRow($(this))">Delete</a>');
-        overlay.append('&nbsp;&nbsp;<a href="#" onClick="download('+$(this).attr("id")+')"><img src="img/icons/download.png" alt="download" /></a>');
+      // on delete : triggered when modal is about to be shown
+      $('#deleteModal').on('show.bs.modal', function(event) {
+        // get data attribute of the clicked element
+        var filePath = $(event.relatedTarget).data('delete-file-path');
+        var lineId = $(event.relatedTarget).data('line-id');
+        // populate textbox
+        $(event.currentTarget).find('span[id="fileName"]').text(filePath.split('/').slice(-1));
+        $(event.currentTarget).find('span[id="filePath"]').text(filePath);
+        $(event.currentTarget).find('span[id="lineId"]').val(lineId);
+      });
+
+      // on delete : when clicks "yes" from modal
+      $('#deleteFile').on('click', function(event) {
+        // hide modal, get line id, remove line from table
+        $('#deleteModal').modal('hide');
+        var lineId = $('#lineId').val();
+        thisRow = $('.table tr[id='+lineId+']').remove();
+        // and trigger file removal
+        var filePath = $('#filePath').text();
+        $.ajax({
+          url: "delete?path="+filePath,
+          context: document.body
+        });
+      });
     });
-
-    // and remove them when it leaves
-    $(".table tr").on("mouseleave", function() {
-        $(this).find("span.overlay").empty();
-    });
-  });
   </script>
 </head>
 <body>
@@ -55,7 +69,7 @@
       %if data['login'] and data['password']:
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
           <p class="navbar-text navbar-right">
-            <a href="logout" class="navbar-link">Log out<span class="glyphicon glyphicon-off" style="margin-left: 5px"></span></a>&nbsp
+            <a href="logout" class="navbar-link">Log out<span class="glyphicon glyphicon-off" style="margin-left: 5px"></span></a>&nbsp;
           </p>
         </div>
       %end
@@ -80,7 +94,7 @@
           </tr>
         %end
         %for row in data['output']:
-          <tr>
+          <tr id="{{ row['counter'] }}">
             <td>
             <img src="img/icons/{{ row["type"] }}.png" alt="{{ row["type"] }}"/>
             %if row["type"] == 'folder':
@@ -89,11 +103,17 @@
               %if row["type"] == 'image':
                 <a href="img/view?path={{ row['path'] }}" class="fancybox">{{ row['name'] }}</a>
               %else:
-                <a href="download?path={{ row['path'] }}">{{ row['name'] }}</a>
+                <a href="#">{{ row['name'] }}</a>
               %end
             %end
             %if data['is_admin']:
-              <span class="overlay" style="float: right;"></span>
+              <span class="overlay" style="float: right;">
+                <a href="#" onClick="editRow($(this))"><span class="glyphicon glyphicon-edit" title="Rename"></span></a>
+                <a href="#" data-toggle="modal" data-target="#deleteModal" data-line-id="{{ row['counter'] }}" data-delete-file-path="{{ row['path'] }}"><span class="glyphicon glyphicon-remove" title="Delete"></span></a>
+                %if row["type"] != 'folder':
+                  <a href="download?path={{ row['path'] }}"><span class="glyphicon glyphicon-download" title="Download"></span></a>
+                %end
+              </span>
             %end
             </td>
             <td>{{ row['chmod'] }}</td>
@@ -146,6 +166,26 @@
         </div>
     </form>
     %end
+  </div>
+
+  <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+          <h4 class="modal-title" id="deleteModalLabel">Are you sure ?</h4>
+        </div>
+        <div class="modal-body">
+          Remove &laquo; <span id="fileName"></span> &raquo; ?
+          <span aria-hidden="true" id="lineId"></span>
+          <span aria-hidden="true" id="filePath"></span>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" data-dismiss="modal">No</button>
+          <button type="button" class="btn btn-danger" id="deleteFile">Yes</button>
+        </div>
+      </div>
+    </div>
   </div>
 
   <!-- Prompt IE 6 users to install Chrome Frame. Remove this if you want to support IE 6.
