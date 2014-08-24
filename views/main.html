@@ -109,8 +109,8 @@
             %if data['is_admin']:
               <span class="overlay" style="float: right;">
                 <a href="#" onClick="editRow($(this))"><span class="glyphicon glyphicon-edit" title="Rename"></span></a>
-                <a href="#" data-toggle="modal" data-target="#deleteModal" data-line-id="{{ row['counter'] }}" data-delete-file-path="{{ row['path'] }}"><span class="glyphicon glyphicon-remove" title="Delete"></span></a>
                 %if row["type"] != 'folder':
+                  <a href="#" data-toggle="modal" data-target="#deleteModal" data-line-id="{{ row['counter'] }}" data-delete-file-path="{{ row['path'] }}"><span class="glyphicon glyphicon-remove" title="Delete"></span></a>
                   <a href="download?path={{ row['path'] }}"><span class="glyphicon glyphicon-download" title="Download"></span></a>
                 %end
               </span>
