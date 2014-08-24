@@ -11,8 +11,8 @@
   <script type="text/javascript" src="js/bootstrap.min-3.2.0.js"></script>
   <script type="text/javascript">
     $(document).ready(function() {
+      // init fancybox
       $("a.fancybox").fancybox();
-      $(".alert").alert('close');
 
       // when mouse enter the table : display buttons
       $(".table tr").on('mouseenter', function() {
@@ -177,8 +177,8 @@
         </div>
         <div class="modal-body">
           Remove &laquo; <span id="fileName"></span> &raquo; ?
-          <span aria-hidden="true" id="lineId"></span>
-          <span aria-hidden="true" id="filePath"></span>
+          <span class="hidden" id="lineId"></span>
+          <span class="hidden" id="filePath"></span>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-primary" data-dismiss="modal">No</button>

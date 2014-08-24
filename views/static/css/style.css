@@ -11,3 +11,8 @@
 span.overlay {
   visibility: hidden;
 }
+
+/* hidden elements */
+.hidden {
+  display: none;
+}

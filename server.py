@@ -161,7 +161,7 @@ def delete():
     filePath = full_path + request.GET.get('path')
     print("deleted file : "+filePath)
     try:
-        os.remove(filePath)
+        os.unlink(filePath)
     except:
         print("File doesn't exists")
     return None
