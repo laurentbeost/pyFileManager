@@ -9,49 +9,7 @@
   <script type="text/javascript" src="js/jquery-2.1.1.min.js"></script>
   <script type="text/javascript" src="js/jquery.fancybox-2.1.5.pack.js"></script>
   <script type="text/javascript" src="js/bootstrap.min-3.2.0.js"></script>
-  <script type="text/javascript">
-    $(document).ready(function() {
-      // init fancybox
-      $("a.fancybox").fancybox();
-
-      // when mouse enter the table : display buttons
-      $(".table tr").on('mouseenter', function() {
-        var overlay = $(this).find('span.overlay');
-        overlay.css('visibility', 'visible');
-      });
-
-      // when mouse leave the table : remove buttons
-      $(".table tr").on('mouseleave', function() {
-        var overlay = $(this).find('span.overlay');
-        overlay.css('visibility', 'hidden');
-      });
-
-      // on delete : triggered when modal is about to be shown
-      $('#deleteModal').on('show.bs.modal', function(event) {
-        // get data attribute of the clicked element
-        var filePath = $(event.relatedTarget).data('delete-file-path');
-        var lineId = $(event.relatedTarget).data('line-id');
-        // populate textbox
-        $(event.currentTarget).find('span[id="fileName"]').text(filePath.split('/').slice(-1));
-        $(event.currentTarget).find('span[id="filePath"]').text(filePath);
-        $(event.currentTarget).find('span[id="lineId"]').val(lineId);
-      });
-
-      // on delete : when clicks "yes" from modal
-      $('#deleteFile').on('click', function(event) {
-        // hide modal, get line id, remove line from table
-        $('#deleteModal').modal('hide');
-        var lineId = $('#lineId').val();
-        thisRow = $('.table tr[id='+lineId+']').remove();
-        // and trigger file removal
-        var filePath = $('#filePath').text();
-        $.ajax({
-          url: "delete?path="+filePath,
-          context: document.body
-        });
-      });
-    });
-  </script>
+  <script type="text/javascript" src="js/main.js"></script>
 </head>
 <body>
   <div class="container">
@@ -97,18 +55,22 @@
           <tr id="{{ row['counter'] }}">
             <td>
             <img src="img/icons/{{ row["type"] }}.png" alt="{{ row["type"] }}"/>
-            %if row["type"] == 'folder':
-              <a href="?path={{ row['path'] }}">{{ row['name'] }}</a>
-            %else:
-              %if row["type"] == 'image':
-                <a href="img/view?path={{ row['path'] }}" class="fancybox">{{ row['name'] }}</a>
-              %else:
-                <a href="#">{{ row['name'] }}</a>
-              %end
-            %end
+            <%
+            thisLink = '#'
+            thisClass = ''
+            if row["type"] == 'folder':
+              thisLink = '?path='+row['path']
+            else:
+              if row["type"] == 'image':
+                thisLink = 'img/view?path='+row['path']
+                thisClass = 'fancybox'
+              end
+            end%>
+            <a href="{{ thisLink }}" id="hrefId{{ row['counter'] }}" class="{{ thisClass }}">{{ row['name'] }}</a>
+            <input id="inputId{{ row['counter'] }}" class="hidden" value="{{ row['name'] }}" />
             %if data['is_admin']:
-              <span class="overlay" style="float: right;">
-                <a href="#" onClick="editRow($(this))"><span class="glyphicon glyphicon-edit" title="Rename"></span></a>
+              <span class="overlay" style="float: right;" id="overlayId{{ row['counter'] }}">
+                <a href="#" class="renameElement" data-element-path="{{ row['path'] }}" data-link-id="Id{{ row['counter'] }}"><span class="glyphicon glyphicon-edit" title="Rename"></span></a>
                 %if row["type"] != 'folder':
                   <a href="#" data-toggle="modal" data-target="#deleteModal" data-line-id="{{ row['counter'] }}" data-delete-file-path="{{ row['path'] }}"><span class="glyphicon glyphicon-remove" title="Delete"></span></a>
                   <a href="download?path={{ row['path'] }}"><span class="glyphicon glyphicon-download" title="Download"></span></a>
