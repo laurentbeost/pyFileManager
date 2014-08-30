@@ -8,12 +8,12 @@ FEATURES :
 - english translation
 - reverse-proxy support
 - display chmod
-
+- download, rename and delete files
 
 
 
 TODO :
-- upload and remove files
+- upload files
 - change chmod
 - change current directory with header links
 - ini configuration support (or SQLite)
