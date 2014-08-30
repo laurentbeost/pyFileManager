@@ -166,6 +166,18 @@ def delete():
         print("File doesn't exists")
     return None
 
+# rename files
+@app.route(app_dir+'/rename')
+def delete():
+    srcPath = full_path+'/'+request.GET.get('srcPath')
+    dstPath = full_path+'/'+request.GET.get('dstPath')
+    print("user wants to move '"+repr(srcPath)+"' to '"+repr(dstPath))
+    try:
+        os.rename(srcPath, dstPath)
+    except:
+        print("File doesn't exists")
+    return None
+
 # download file
 @app.route(app_dir+'/download')
 def download():

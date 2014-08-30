@@ -72,8 +72,8 @@
               <span class="overlay" style="float: right;" id="overlayId{{ row['counter'] }}">
                 <a href="#" class="renameElement" data-element-path="{{ row['path'] }}" data-link-id="Id{{ row['counter'] }}"><span class="glyphicon glyphicon-edit" title="Rename"></span></a>
                 %if row["type"] != 'folder':
-                  <a href="#" data-toggle="modal" data-target="#deleteModal" data-line-id="{{ row['counter'] }}" data-delete-file-path="{{ row['path'] }}"><span class="glyphicon glyphicon-remove" title="Delete"></span></a>
                   <a href="download?path={{ row['path'] }}"><span class="glyphicon glyphicon-download" title="Download"></span></a>
+                  <a href="#" data-toggle="modal" data-target="#deleteModal" data-line-id="{{ row['counter'] }}" data-delete-file-path="{{ row['path'] }}"><span class="glyphicon glyphicon-trash" title="Remove"></span></a>
                 %end
               </span>
             %end
