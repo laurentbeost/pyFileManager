@@ -59,6 +59,9 @@ $(document).ready(function() {
 
   // renaming
   var renamingProcess = function(srcPath, dstPath) {
+    if (srcPath == dstPath) {
+      return;
+    }
     $.ajax({
       url: "rename?srcPath="+srcPath+"&dstPath="+dstPath,
       context: document.body

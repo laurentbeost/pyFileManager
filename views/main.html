@@ -89,6 +89,25 @@
         %end
       </table>
     </div>
+    <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+            <h4 class="modal-title" id="deleteModalLabel">Are you sure ?</h4>
+          </div>
+          <div class="modal-body">
+            Remove &laquo; <span id="fileName"></span> &raquo; ?
+            <span class="hidden" id="lineId"></span>
+            <span class="hidden" id="filePath"></span>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary" data-dismiss="modal">No</button>
+            <button type="button" class="btn btn-danger" id="deleteFile">Yes</button>
+          </div>
+        </div>
+      </div>
+    </div>
     %else:
     <form class="form-horizontal" action="{{ data['app_dir'] }}/login" method="POST">
       <div id="loginbox" style="margin-top:50px;" class="mainbox col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2">
@@ -129,32 +148,5 @@
     </form>
     %end
   </div>
-
-  <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-          <h4 class="modal-title" id="deleteModalLabel">Are you sure ?</h4>
-        </div>
-        <div class="modal-body">
-          Remove &laquo; <span id="fileName"></span> &raquo; ?
-          <span class="hidden" id="lineId"></span>
-          <span class="hidden" id="filePath"></span>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-primary" data-dismiss="modal">No</button>
-          <button type="button" class="btn btn-danger" id="deleteFile">Yes</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Prompt IE 6 users to install Chrome Frame. Remove this if you want to support IE 6.
-       chromium.org/developers/how-tos/chrome-frame-getting-started -->
-  <!--[if lt IE 7 ]>
-    <script defer src="//ajax.googleapis.com/ajax/libs/chrome-frame/1.0.3/CFInstall.min.js"></script>
-    <script defer>window.attachEvent('onload',function(){CFInstall.check({mode:'overlay'})})</script>
-  <![endif]-->
 </body>
 </html>

@@ -171,6 +171,8 @@ def delete():
 def delete():
     srcPath = full_path+'/'+request.GET.get('srcPath')
     dstPath = full_path+'/'+request.GET.get('dstPath')
+    if srcPath == dstPath:
+      return None
     print("user wants to move '"+repr(srcPath)+"' to '"+repr(dstPath))
     try:
         os.rename(srcPath, dstPath)
