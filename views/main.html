@@ -14,25 +14,26 @@
 <body>
   <div class="container">
     %if data['login'] and data['password']:
-  <nav class="navbar navbar-default" role="navigation">
-    <div class="container-fluid">
-      <div class="navbar-header">
-        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1"> <span class="sr-only">Toggle navigation</span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-        </button>
-        <a class="navbar-brand" href="#">{{ data['title'] }}</a>
-      </div>
-      %if data['login'] and data['password']:
-        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-          <p class="navbar-text navbar-right">
-            <a href="logout" class="navbar-link">Log out<span class="glyphicon glyphicon-off" style="margin-left: 5px"></span></a>&nbsp;
-          </p>
+    <nav class="navbar navbar-default" role="navigation">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1"> <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">{{ data['title'] }}</a>
         </div>
-      %end
-    </div>
-  </nav>
+        %if data['login'] and data['password']:
+          <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <p class="navbar-text navbar-right">
+              <a href="logout" class="navbar-link">Log out<span class="glyphicon glyphicon-off" style="margin-left: 5px"></span></a>&nbsp;
+            </p>
+          </div>
+        %end
+      </div>
+    </nav>
+    <span id="alertMarker"></span>
     <div class="panel panel-default" id="main">
       <div class="panel-heading">Browse files : {{ data['title'] }}</div>
       <table class="table">

@@ -59,17 +59,44 @@ $(document).ready(function() {
 
   // renaming
   var renamingProcess = function(srcPath, dstPath) {
+    // don't uselessly send request
     if (srcPath == dstPath) {
       return;
     }
+    // display loading gif
+    showHideLoading(".no-input")
+    // send request
     $.ajax({
       url: "rename?srcPath="+srcPath+"&dstPath="+dstPath,
-      context: document.body
+      context: document.body,
+      error: function(result, statut, error) {
+        // display message
+        displayAlertBox('<strong>Error!</strong> Could not rename this element : check your network connectivity.')
+      },
+      complete: function(http_code, statut){
+        // after success/error : remove loading gif
+        showHideLoading()
+      }
     });
   }
 
+  // display or hide loading gif
+  var showHideLoading = function(selector) {
+        if ($("#loading").size() == 0) {
+          $(selector).after('<img src="img/icons/load.gif" alt="loading" id="loading" />')
+        } else {
+          $("#loading").remove();
+        }
+  }
 
-  // renaming : clic to rename
+  var displayAlertBox = function(message) {
+    $('#alertMarker').after('<div class="alert alert-warning alert-dismissible" role="alert" id="alertBox">'
+      +'<button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>'
+      +message
+    +'</div>');
+  }
+
+  // renaming : click to rename
   $('.renameElement').on('click', function(event) {
     // disable previous renaming
     disableRenaming();
