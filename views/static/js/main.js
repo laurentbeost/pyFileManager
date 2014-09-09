@@ -1,6 +1,10 @@
 $(document).ready(function() {
   // init fancybox
-  $("a.fancybox").fancybox();
+  $("a.fancyLink").fancybox({
+    openEffect: 'fade',
+    prevEffect: 'fade',
+    nextEffect: 'fade'
+  });
 
 
   // when mouse enter the table : display buttons
