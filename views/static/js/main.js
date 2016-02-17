@@ -75,7 +75,7 @@ $(document).ready(function() {
       context: document.body,
       error: function(result, statut, error) {
         // display message
-        displayAlertBox('<strong>Error!</strong> Could not rename this element : check your network connectivity.')
+        displayAlertBox('<strong>Error!</strong> Could not rename this element : something went wrong.')
       },
       complete: function(http_code, statut){
         // after success/error : remove loading gif

@@ -1,10 +1,10 @@
 pyFileManager
 =============
 
-Python web file manager
+A simple web file manager in Python.
 
 --
-FEATURES :
+#### FEATURES :
 - english translation
 - reverse-proxy support
 - display chmod
@@ -12,19 +12,18 @@ FEATURES :
 
 
 
-TODO :
+#### TODO :
 - upload files
 - change chmod
 - change current directory with header links
 - ini configuration support (or SQLite)
-- view files (images, text, etc)
+- display non binary files
 - multilang support
 - code cleanup
 
 
 
-
-HOW TO USE WITH NGINX :
+#### HOW TO USE WITH NGINX :
 - change "app_dir" to desired directory
 - use this location configuration with NGiNX :
 ```

@@ -7,9 +7,15 @@ def is_admin(login):
         return True
     return False
 
-def is_autheticated_admin(login, password):
+def is_authenticated_admin(login, password):
     """Check if the user is *really* and authenticated administrator."""
     if is_admin(login) and check_auth(login, password):
+        return True
+    return False
+
+def is_authenticated_user(login, password):
+    """Check if the user is *really* and authenticated administrator."""
+    if check_auth(login, password):
         return True
     return False
 

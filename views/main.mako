@@ -15,8 +15,8 @@
 </head>
 <body>
   <div class="container">
-    %if data['login'] and data['password']:
-    <nav class="navbar navbar-default" role="navigation">
+    %if data['is_auth']:
+    <nav class="navbar navbar-default">
       <div class="container-fluid">
         <div class="navbar-header">
           <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1"> <span class="sr-only">Toggle navigation</span>

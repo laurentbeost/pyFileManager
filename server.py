@@ -148,29 +148,26 @@ def css_static(filename):
 @route(app_dir+'/upload', method='POST')
 def do_upload():
     """Upload files : only the admin can do this."""
-    if not security.is_autheticated_admin(request.get_cookie("login"), request.get_cookie("password")):
+    if not security.is_authenticated_admin(request.get_cookie("login"), request.get_cookie("password")):
         return None
     name = request.forms.get('name')
     if log_debug:
         print("uploaded file : "+name)
     path = request.forms.get('path').replace("/" + name, "")
     data = request.files.get('file')
-    if not os.path.isdir(full_path + path + "/.thumbs"):
-        os.mkdir(full_path + path + "/.thumbs")
-    try:
-        os.remove(full_path + path + "/.thumbs/" + name + ".jpg")
-    except:
+    new_file = open(full_path + path + name, "w+")
+    if (os.path.exists(new_file)):
         if log_debug:
-            print("File doesn't exists")
-    thumb = open(full_path + path + "/.thumbs/" + name + ".jpg", "w+")
-    thumb.write(data.file.read())
+            print("user wants to move '"+repr(srcPath)+"' to '"+repr(dstPath))
+        return None
+    new_file.write(data.file.read())
     return redirect(app_dir+"/?path=" + path)
 
 
 @route(app_dir+'/rename')
 def rename():
     """Rename a file/directory : only the admin can do this."""
-    if not security.is_autheticated_admin(request.get_cookie("login"), request.get_cookie("password")):
+    if not security.is_authenticated_admin(request.get_cookie("login"), request.get_cookie("password")):
         return None
     srcPath = full_path+'/'+request.GET.get('srcPath')
     dstPath = full_path+'/'+request.GET.get('dstPath')
@@ -182,14 +179,14 @@ def rename():
         os.rename(srcPath, dstPath)
     except:
         if log_debug:
-            print("File doesn't exists")
+            print("Can't rename file")
     return None
 
 
 @route(app_dir+'/download')
 def download():
     """Download a file : only the admin can do this."""
-    if not security.is_autheticated_admin(request.get_cookie("login"), request.get_cookie("password")):
+    if not security.is_authenticated_admin(request.get_cookie("login"), request.get_cookie("password")):
         return None
     filename = request.GET.get('path')
     return static_file(filename, root=full_path, download=filename)
@@ -198,7 +195,7 @@ def download():
 @route(app_dir+'/delete')
 def delete():
     """Delete a file : only the admin can do this."""
-    if not security.is_autheticated_admin(request.get_cookie("login"), request.get_cookie("password")):
+    if not security.is_authenticated_admin(request.get_cookie("login"), request.get_cookie("password")):
         return None
     filePath = full_path + request.GET.get('path')
     if log_debug:
@@ -218,12 +215,11 @@ def redirect_home():
 
 
 @route(app_dir+'/')
-@view('main.tpl')
+@view('main.mako')
 def list():
     """App home : is building the file listing job."""
-    is_admin = security.is_admin(request.get_cookie("login"))
-    for header in response.headers:
-        print(header)
+    is_auth = security.is_authenticated_user(request.get_cookie("login"), request.get_cookie("password"))
+    is_admin = (is_auth and security.is_admin(request.get_cookie("login")))
     path = request.GET.get('path')
     if not path:
         path = '/'
@@ -256,20 +252,15 @@ def list():
                 filepath = path + item
             else:
                 filepath = path + "/" + item
-            if os.path.exists(full_path + path + "/.thumbs/" + item + ".jpg"):
-                preview = path + "/.thumbs/" + item + ".jpg"
-            else:
-                preview = False
             file = full_path + path + '/' + item
             fileList.append({"name": item, "path": filepath, "type": get_file_type(item),
                 "date": date_file(full_path +filepath), "size": get_file_size(full_path + filepath),
-                "preview": preview, "id": id, "chmod":chmod.get_pretty_chmod(file)})
+                "id": id, "chmod":chmod.get_pretty_chmod(file)})
             id = id + 1
     
     data = {"title": path, "full_path": full_path, "path": path, "list": all_files,
-        "toplevel": toplevel, "fileList": fileList, "login": request.get_cookie("login"),
-        "password": request.get_cookie("password"), "error": request.GET.get('error'),
-        "is_admin": is_admin, "app_dir": app_dir}
+        "toplevel": toplevel, "fileList": fileList, "is_auth": is_auth,
+        "is_admin": is_admin, "error": request.GET.get('error'), "app_dir": app_dir}
     return dict(data=data)
 
 
