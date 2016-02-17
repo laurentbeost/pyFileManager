@@ -5,12 +5,12 @@
   <meta name="description" content="pyFileManager - Python web file manager">
   <link rel="stylesheet" href="css/jquery.fancybox-2.1.5.pack.css" type="text/css" media="screen" />
   <link rel="stylesheet" href="css/jquery.fancybox-buttons-1.0.5.pack.css" type="text/css" media="screen" />
-  <link rel="stylesheet" href="css/bootstrap.min-3.2.0.css">
+  <link rel="stylesheet" href="css/bootstrap.min-3.3.6.css">
   <link rel="stylesheet" href="css/style.css">
-  <script type="text/javascript" src="js/jquery-2.1.1.min.js"></script>
+  <script type="text/javascript" src="js/jquery-2.2.0.min.js"></script>
   <script type="text/javascript" src="js/jquery.fancybox-2.1.5.pack.js"></script>
   <script type="text/javascript" src="js/jquery.fancybox-buttons-1.0.5.pack.js"></script>
-  <script type="text/javascript" src="js/bootstrap.min-3.2.0.js"></script>
+  <script type="text/javascript" src="js/bootstrap.min-3.3.6.js"></script>
   <script type="text/javascript" src="js/main.js"></script>
 </head>
 <body>
@@ -46,7 +46,7 @@
         %if data['toplevel']:
           <tr>
             <td>
-              <img src="img/icons/folder.png" alt="folder"/>
+              <span class="glyphicon glyphicon-folder-open"></span>
               <a href="?path=${data['toplevel']}">..</a>
             </td>
             <td><td><td></td><td></td>
