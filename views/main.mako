@@ -3,9 +3,10 @@
   <meta charset="utf-8"/>
   <title>File manager</title>
   <meta name="description" content="pyFileManager - Python web file manager">
+  <link rel="stylesheet" href="css/bootstrap.min-3.3.6.css">
+  <link rel="stylesheet" href="css/font-awesome.min.css">
   <link rel="stylesheet" href="css/jquery.fancybox-2.1.5.pack.css" type="text/css" media="screen" />
   <link rel="stylesheet" href="css/jquery.fancybox-buttons-1.0.5.pack.css" type="text/css" media="screen" />
-  <link rel="stylesheet" href="css/bootstrap.min-3.3.6.css">
   <link rel="stylesheet" href="css/style.css">
   <script type="text/javascript" src="js/jquery-2.2.0.min.js"></script>
   <script type="text/javascript" src="js/jquery.fancybox-2.1.5.pack.js"></script>
@@ -28,7 +29,7 @@
         </div>
           <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <p class="navbar-text navbar-right">
-              <a href="logout" class="navbar-link">Log out<span class="glyphicon glyphicon-off" style="margin-left: 5px"></span></a>&nbsp;
+              <a href="logout" class="navbar-link">Log out<i class="fa fa-sign-out" style="margin-left: 5px"></i></a>&nbsp;
             </p>
           </div>
       </div>
@@ -46,44 +47,42 @@
         %if data['toplevel']:
           <tr>
             <td>
-              <span class="glyphicon glyphicon-folder-open"></span>
-              <a href="?path=${data['toplevel']}">..</a>
+              <a href="?path=${data['toplevel']}" title="Parent directory"><i class="fa fa-folder-open-o" style="margin-right: 5px; color: #000"></i>..</a>
             </td>
-            <td><td><td></td><td></td>
+            <td><td><td></td>
           </tr>
         %endif
         %for row in data['fileList']:
           <tr id="${row['id']}">
             <td>
-            <img src="img/icons/${row["type"]}.png" alt="${row["type"]}"/>
             <%
             thisLink = '#'
             thisClass = ''
             thisFancyGroup = ''
-            if row["type"] == 'folder':
+            if row["filetype"] == 'folder-o':
               thisLink = '?path='+row['path']
             else:
-              if row["type"] == 'image':
+              if row["filetype"] == 'file-image-o':
                 thisLink = 'img/view?path='+row['path']
                 thisClass = 'fancyLink'
                 thisFancyGroup = 'group'
               end
             end%>
-            <a href="${thisLink}" id="hrefId${row['id']}" class="${thisClass}" data-fancybox-group="${thisFancyGroup}">${row['name']}</a>
+            <a href="${thisLink}" id="hrefId${row['id']}" class="${thisClass}" data-fancybox-group="${thisFancyGroup}"><i class="fa fa-${row["filetype"]}" style="margin-right: 5px; color: #000"></i>${row['name']}</a>
             <input id="inputId${row['id']}" class="hidden" value="${row['name']}" />
             %if data['is_admin']:
               <span class="overlay" style="float: right;" id="overlayId${row['id']}">
-                <a href="#" class="renameElement" data-element-path="${row['path']}" data-link-id="Id${row['id']}"><span class="glyphicon glyphicon-edit" title="Rename"></span></a>
-                %if row["type"] != 'folder':
-                  <a href="download?path=${row['path']}"><span class="glyphicon glyphicon-download" title="Download"></span></a>
-                  <a href="#" data-toggle="modal" data-target="#deleteModal" data-line-id="${row['id']}" data-delete-file-path="${row['path']}"><span class="glyphicon glyphicon-trash" title="Remove"></span></a>
+                <a href="#" class="renameElement" data-element-path="${row['path']}" data-link-id="Id${row['id']}"><i class="fa fa-pencil-square-o" title="Rename"></i></a>
+                %if row["filetype"] != 'folder-o':
+                  <a href="download?path=${row['path']}"><i class="fa fa-arrow-circle-o-down" title="Download"></i></a>
+                  <a href="#" data-toggle="modal" data-target="#deleteModal" data-line-id="${row['id']}" data-delete-file-path="${row['path']}"><i class="fa fa-trash-o" title="Remove"></i></a>
                 %endif
               </span>
             %endif
             </td>
             <td>${row['chmod']}</td>
             <td>
-              %if row["type"] != 'folder':
+              %if row["filetype"] != 'folder-o':
                 ${row['size']}
               %endif
             </td>
@@ -119,11 +118,11 @@
               <fieldset>
                 <legend>Please sign in</legend>
                 <div class="input-group" style="margin-bottom: 25px">
-                  <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+                  <span class="input-group-addon"><i class="fa fa-user"></i></span>
                   <input id="login" type="text" class="form-control" name="login" value="" placeholder="username">
                 </div>
                 <div class="input-group" style="margin-bottom: 25px">
-                  <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
+                  <span class="input-group-addon"><i class="fa fa-lock"></i></span>
                   <input id="password" type="password" class="form-control" name="password" value="" placeholder="password">
                 </div>
 

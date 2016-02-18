@@ -17,45 +17,35 @@ exclude = []
 log_debug = True
 
 
-def get_file_type(filename):
-    """Get file type based on file name."""
+def get_icon(filename):
+    """Get icon, based on file name."""
     path = request.GET.get('path')
     if not path:
         path = '/'
     TEXT_TYPE = ['doc', 'docx', 'txt', 'rtf', 'odf', 'text', 'nfo']
-    AUDIO_TYPE = ['aac', 'mp3', 'wav', 'wma', 'm4p', 'flac']
-    IMAGE_TYPE = ['bmp', 'gif', 'jpg', 'jpeg', 'png','svg']
-    IMAGESOURCE_TYPE = ['eps', 'ico', 'psd', 'psp', 'raw', 'tga', 'tif', 'tiff', 'svg']
+    LANGUAGE_TYPE = ['js', 'html', 'htm', 'xhtml', 'jsp', 'asp', 'aspx', 'php', 'xml', 'css', 'py', 'bat', 'sh', 'rb', 'java']
+    AUDIO_TYPE = ['aac', 'mp3', 'wav', 'wma', 'm4p', 'flac', 'ac3']
+    IMAGE_TYPE = ['bmp', 'gif', 'jpg', 'jpeg', 'png','svg', 'eps', 'ico', 'psd', 'psp', 'raw', 'tga', 'tif', 'tiff', 'svg']
     VIDEO_TYPE = ['mv4', 'bup', 'mkv', 'ifo', 'flv', 'vob', '3g2', 'bik', 'xvid', 'divx', 'wmv', 'avi', '3gp', 'mp4', 'mov', '3gpp', '3gp2', 'swf', 'mpg', 'mpeg']
-    ARCHIVE_TYPE = ['7z', 'dmg', 'rar', 'sit', 'zip', 'bzip', 'gz', 'tar', 'ace']
-    EXEC_TYPE = ['exe', 'msi', 'mse']
-    SCRIPT_TYPE = ['js', 'html', 'htm', 'xhtml', 'jsp', 'asp', 'aspx', 'php', 'xml', 'css', 'py', 'bat', 'sh', 'rb', 'java']
-
+    ARCHIVE_TYPE = ['7z', 'dmg', 'rar', 'sit', 'zip', 'bzip', 'gz', 'tar', 'bz2', 'ace']
+    
     if os.path.isdir(full_path + path + "/" + filename):
-        return "folder"
+        return 'folder-o'
     else:
-        extension = os.path.splitext(filename)[1].replace('.','')
-        if extension in TEXT_TYPE:
-            type_file = 'text'
-        elif extension in AUDIO_TYPE:
-            type_file = 'audio'
+        extension = os.path.splitext(filename)[1][1:].lower()
+        if extension in AUDIO_TYPE:
+            return 'music'
+        elif extension in TEXT_TYPE or extension in LANGUAGE_TYPE:
+            return 'file-text-o'
         elif extension in IMAGE_TYPE:
-            type_file = 'image'
-        elif extension in IMAGESOURCE_TYPE:
-            type_file = 'imagesource'
+            return 'file-image-o'
         elif extension in VIDEO_TYPE:
-            type_file = 'video'
+            return 'film'
         elif extension in ARCHIVE_TYPE:
-            type_file = 'archive'
-        elif extension in EXEC_TYPE:
-            type_file = 'exec'
-        elif extension in SCRIPT_TYPE:
-            type_file = 'script'
+            return 'file-archive-o'
         elif extension == 'pdf':
-            type_file = 'pdf'
-        else:
-            type_file = 'unknow'
-        return type_file
+            return 'file-pdf-o'
+        return 'file-o'
 
 
 def date_file(path):
@@ -171,6 +161,7 @@ def rename():
         return None
     srcPath = full_path+'/'+request.GET.get('srcPath')
     dstPath = full_path+'/'+request.GET.get('dstPath')
+    itemId = request.GET.get('itemId');
     if srcPath == dstPath:
         return None
     if log_debug:
@@ -180,7 +171,7 @@ def rename():
     except:
         if log_debug:
             print("Can't rename file")
-    return None
+    return '{"itemId": "'+itemId+'", "filetype": "'+get_icon(dstPath)+'"}'
 
 
 @route(app_dir+'/download')
@@ -253,7 +244,7 @@ def list():
             else:
                 filepath = path + "/" + item
             file = full_path + path + '/' + item
-            fileList.append({"name": item, "path": filepath, "type": get_file_type(item),
+            fileList.append({"name": item, "path": filepath, "filetype": get_icon(item),
                 "date": date_file(full_path +filepath), "size": get_file_size(full_path + filepath),
                 "id": id, "chmod":chmod.get_pretty_chmod(file)})
             id = id + 1

@@ -62,24 +62,28 @@ $(document).ready(function() {
 
 
   // renaming
-  var renamingProcess = function(srcPath, dstPath) {
+  var renamingProcess = function(itemId, srcPath, dstPath) {
     // don't uselessly send request
     if (srcPath == dstPath) {
       return;
     }
     // display loading gif
-    showHideLoading(".no-input")
+    showHideLoading(".no-input");
     // send request
     $.ajax({
-      url: "rename?srcPath="+srcPath+"&dstPath="+dstPath,
+      url: "rename?itemId="+itemId+"&srcPath="+srcPath+"&dstPath="+dstPath,
       context: document.body,
       error: function(result, statut, error) {
-        // display message
-        displayAlertBox('<strong>Error!</strong> Could not rename this element : something went wrong.')
+        // remove spinner, display message
+        showHideLoading();
+        displayAlertBox('<strong>Error!</strong> Could not rename this element : something went wrong.');
       },
       complete: function(http_code, statut){
         // after success/error : remove loading gif
-        showHideLoading()
+        showHideLoading();
+        // update icon, based on file type
+        var jsonData = jQuery.parseJSON(http_code.responseText);
+        $('#href'+jsonData['itemId']+' i').attr('class', 'fa fa-'+jsonData['filetype']);
       }
     });
   }
@@ -87,7 +91,7 @@ $(document).ready(function() {
   // display or hide loading gif
   var showHideLoading = function(selector) {
         if ($("#loading").size() == 0) {
-          $(selector).after('<img src="img/icons/load.gif" alt="loading" id="loading" />')
+          $(selector).after('<i class="fa fa-spinner fa-spin" alt="loading" id="loading"></i>')
         } else {
           $("#loading").remove();
         }
@@ -126,10 +130,11 @@ $(document).ready(function() {
         srcPath = $('#href'+linkId).text();
         dstPath = $('#input'+linkId).val();
         // rename
-        renamingProcess(srcPath, dstPath);
+        renamingProcess(linkId, srcPath, dstPath);
         // change name on href link
         inputArea = $('#input'+linkId);
-        $('#href'+linkId).text(inputArea.val());
+        prefixIcon = '<i class="fa fa-file-o" style="margin-right: 5px; color: #000"></i>';
+        $('#href'+linkId).html(prefixIcon+inputArea.val());
         // remove input
         disableRenaming(linkId);
       }

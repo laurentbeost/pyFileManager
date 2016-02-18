@@ -24,7 +24,7 @@ def can_login(login, password):
     if login in accounts and accounts[login] == password:
         return True
     return False
-	
+
 def encrypt_password(password):
     """Encrypt user's password, with multiple secure hashes."""
     md5_hash = hashlib.md5(password).hexdigest()
