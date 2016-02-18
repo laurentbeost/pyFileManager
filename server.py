@@ -229,9 +229,9 @@ def list():
         settings_file = open(f, "r+")
         settings_json = json.load(settings_file)
         settings_file.close()
-    dir_list.sort()
+    dir_list.sort(key=lambda d: d.lower())
     file_list = [f for f in os.listdir(current_dir) if os.path.isfile(os.path.join(current_dir, f))]
-    file_list.sort()
+    file_list.sort(key=lambda d: d.lower())
     all_files = dir_list + file_list
     fileList = []
     id = 1
