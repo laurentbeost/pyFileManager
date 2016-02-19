@@ -1,13 +1,14 @@
 #!/usr/bin/env python2
 # -*- coding: utf-8 -*-
+
 from bottle import(
-    route, post, mako_view as view, request,
+    route, post, request, view,
     static_file, response, redirect, run)
-from bottle import mako_template as template
-import libs.chmod as chmod
-import libs.security as security
 import sys, os, time, urllib2, json
 
+sys.path.insert(1, os.path.abspath(os.path.join(os.path.dirname(__file__), 'lib')))
+from utils import chmod
+from security import security
 
 full_path = os.path.abspath(os.path.dirname(sys.argv[0]))
 app_dir = '/filemanager'
@@ -206,7 +207,7 @@ def redirect_home():
 
 
 @route(app_dir+'/')
-@view('main.mako')
+@view('main.stpl')
 def list():
     """App home : is building the file listing job."""
     is_auth = security.is_authenticated_user(request.get_cookie("login"), request.get_cookie("password"))
@@ -255,4 +256,4 @@ def list():
     return dict(data=data)
 
 
-run(host='127.0.0.1', port=8082, reloader=True, debug=False)
+run(host='127.0.0.1', port=8082, reloader=True, debug=True)
