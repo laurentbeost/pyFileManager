@@ -1,4 +1,4 @@
-from bottle import route, static_file
+from bottle import route, static_file, request
 from config import config
 
 """Handle static ressources."""
