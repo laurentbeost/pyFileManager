@@ -16,10 +16,6 @@ def view_img_static():
     filename = request.GET.get('path')
     return static_file(filename, root=config.full_path)
 
-@route(config.app_dir+'/img/icons/:filename')
-def icons_static(filename):
-    return static_file(filename, root=config.full_path+'/views/static/img/icons/')
-
 @route(config.app_dir+'/img/fancybox/:filename')
 def fancybox_static(filename):
     return static_file(filename, root=config.full_path+'/views/static/img/fancybox/')
