@@ -2,7 +2,7 @@ from bottle import route, view, request
 from config import config
 from security import security
 from utils import utils, chmod
-import os, json
+import os, json, urllib
 
 @route('/')
 def redirect_home():
@@ -48,7 +48,7 @@ def list():
             else:
                 filepath = path + "/" + item
             file = config.full_path + path + '/' + item
-            fileList.append({"name": item, "path": filepath, "filetype": utils.get_icon(config.full_path, request.GET.get('path'), item),
+            fileList.append({"name": item, "path": urllib.quote(filepath), "filetype": utils.get_icon(config.full_path, request.GET.get('path'), item),
                 "date": utils.date_file(config.full_path +filepath), "size": utils.get_file_size(config.full_path + filepath),
                 "id": id, "chmod":chmod.get_pretty_chmod(file)})
             id = id + 1
