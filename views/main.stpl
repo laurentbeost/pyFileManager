@@ -65,6 +65,9 @@
                   thisLink = "img/view?path="+row['path']
                   thisClass = "fancyLink"
                   thisFancyGroup = "group"
+              elif row['filetype'] == 'file-movie-o':
+                  thisLink = "movie/view?path="+row['path']
+                  thisClass = "fancyMovie"
             end%>
             <a href="{{thisLink}}" id="hrefId{{row['id']}}" class="{{thisClass}}" data-fancybox-group="{{thisFancyGroup}}"><i class="fa fa-{{row['filetype']}}" style="margin-right: 5px; color: #000"></i>{{row['name']}}</a>
             <input id="inputId{{row['id']}}" class="hidden" value="{{row['name']}}" />

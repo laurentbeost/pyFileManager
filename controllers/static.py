@@ -11,7 +11,7 @@ def view_img_static():
     filename = request.GET.get('path')
     return static_file(filename, root=config.full_path)
 
-@route(config.app_dir+'/thumb')
+@route(config.app_dir+'/movie/view')
 def view_img_static():
     filename = request.GET.get('path')
     return static_file(filename, root=config.full_path)

@@ -1,11 +1,16 @@
 $(document).ready(function() {
-  // init fancybox
+  // init fancybox to view images
   $("a.fancyLink").fancybox({
     openEffect: 'fade',
     prevEffect: 'fade',
     nextEffect: 'fade'
   });
-
+  // and for movies
+  $("a.fancyMovie").fancybox({
+    minWidth: 640,
+    minHeight: 480,
+    type: 'iframe'
+  });
 
   // when mouse enter the table : display buttons
   $(".table tr").on('mouseenter', function() {

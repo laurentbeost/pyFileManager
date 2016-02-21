@@ -23,6 +23,8 @@ def get_icon(full_path, path, filename):
             return 'file-text-o'
         elif extension in IMAGE_TYPE:
             return 'file-image-o'
+        elif extension == 'mp4':
+            return 'file-movie-o'
         elif extension in VIDEO_TYPE:
             return 'film'
         elif extension in ARCHIVE_TYPE:
